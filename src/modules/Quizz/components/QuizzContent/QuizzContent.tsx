@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { IQuizzData } from '../../interfaces/IQuizzData'
 import { IQuizzFinalized } from '../../interfaces/IQuizzFinalized'
 import { IQuizzWithAnswers } from '../../interfaces/IQuizzWithAnswers'
-import { GetQuizzDataService } from '../../services/GetQuizzDataService'
-
+/* import { GetQuizzDataService } from '../../services/GetQuizzDataService'
+ */
 import * as S from './styles'
 
 type TQuizzContent = {}
@@ -46,9 +46,13 @@ const QuizzContent: React.FC<TQuizzContent> = () => {
 
   const getAllQuestions = useCallback(async () => {
     setIsLoading(true)
-    const res = await new GetQuizzDataService().execute()
+    //const res = await new GetQuizzDataService().execute()
+    const res = false
     setIsLoading(false)
-    if (!res) return alert('SOMETHING GOES WORNG')
+    if (!res) {
+      alert('SOMETHING GOES WORNG')
+      return navigate('/')
+    }
     setQuizzQuestions(res)
   }, [])
 
