@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { IQuizzData } from '../../interfaces/IQuizzData'
+import { GetQuizzDataService } from '../../services/GetQuizzDataService'
 
 import * as S from './styles'
 
@@ -22,43 +24,31 @@ type TQuizzContent = {}
 
 const QuizzContent: React.FC<TQuizzContent> = () => {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0)
+  const [quizzQuestions, setQuizzQuestions] = useState<IQuizzData[]>()
   const [quizzAnswers, setQuizzAnswers] = useState<IQuizzFinalized>({ answers: [], total: 0 })
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const dummyData = [
-    {
-      category: 'History',
-      type: 'boolean',
-      difficulty: 'hard',
-      question: 'Joseph Stalin&#039;s real name was Ioseb Bessarionis dze Dzugashvili.',
-      correct_answer: 'True',
-      incorrect_answers: ['False']
-    },
-    {
-      category: 'SEILA',
-      type: 'boolean',
-      difficulty: 'hard',
-      question: 'ALGUMA COISA',
-      correct_answer: 'True',
-      incorrect_answers: ['False']
-    },
-    {
-      category: 'TERCEIRA COISA',
-      type: 'boolean',
-      difficulty: 'hard',
-      question: 'OUTRA COISA DA OUTRA COISA',
-      correct_answer: 'False',
-      incorrect_answers: ['TRUE']
-    }
-  ]
+  const navigate = useNavigate()
+
+  const redirect = () => {
+    return navigate('/')
+  }
 
   const handleAnswerButton = (answer: string) => {
-    if (currentQuestion < dummyData.length) {
+    if (!quizzQuestions) return
+    if (currentQuestion < quizzQuestions.length) {
       setQuizzAnswers((oldState: IQuizzFinalized) => {
-        if (answer === dummyData[currentQuestion].correct_answer) {
-          const currentData: IQuizzWithAnswers = { ...dummyData[currentQuestion], isCorrect: true }
+        if (answer === quizzQuestions[currentQuestion].correct_answer) {
+          const currentData: IQuizzWithAnswers = {
+            ...quizzQuestions[currentQuestion],
+            isCorrect: true
+          }
           return { answers: [...oldState.answers, currentData], total: oldState.total + 1 }
         } else {
-          const currentData: IQuizzWithAnswers = { ...dummyData[currentQuestion], isCorrect: false }
+          const currentData: IQuizzWithAnswers = {
+            ...quizzQuestions[currentQuestion],
+            isCorrect: false
+          }
           return { answers: [...oldState.answers, currentData], total: oldState.total }
         }
       })
@@ -67,24 +57,25 @@ const QuizzContent: React.FC<TQuizzContent> = () => {
     }
   }
 
-  useEffect(() => {
-    console.log(quizzAnswers, 'quizzAnswers')
-  }, [quizzAnswers])
-  /* const getAllQuestions = useCallback(async () => {
+  const getAllQuestions = useCallback(async () => {
+    setIsLoading(true)
     const res = await new GetQuizzDataService().execute()
-    console.log(res, 'res')
+    setIsLoading(false)
+    if (!res) return alert('SOMETHING GOES WORNG')
+    setQuizzQuestions(res)
   }, [])
 
   useEffect(() => {
     getAllQuestions()
-  },[]) */
+  }, [])
 
   return (
     <S.Wrapper>
-      {currentQuestion === dummyData.length && quizzAnswers && (
+      {isLoading && <S.Header>LOADING...</S.Header>}
+      {currentQuestion === quizzQuestions?.length && quizzAnswers && (
         <S.Content>
           <S.Header>
-            You scored {quizzAnswers.total}/{dummyData.length}
+            You scored {quizzAnswers.total}/{quizzQuestions?.length}
           </S.Header>
 
           <S.ItemList>
@@ -93,9 +84,7 @@ const QuizzContent: React.FC<TQuizzContent> = () => {
                 return (
                   <div key={Math.random()} className={'final-statement'}>
                     {answer.isCorrect ? '✅' : '❌'}{' '}
-                    <S.TextFinalized
-                      dangerouslySetInnerHTML={{ __html: answer.question }}
-                    />
+                    <S.TextFinalized dangerouslySetInnerHTML={{ __html: answer.question }} />
                   </div>
                 )
               })}
@@ -103,13 +92,13 @@ const QuizzContent: React.FC<TQuizzContent> = () => {
             </>
           </S.ItemList>
 
-          <S.Button onClick={() => handleAnswerButton('False')}>PLAY AGAIN?</S.Button>
+          <S.Button onClick={redirect}>PLAY AGAIN?</S.Button>
         </S.Content>
       )}
-      {currentQuestion < dummyData.length && (
+      {!!quizzQuestions && currentQuestion < quizzQuestions.length && (
         <S.Content>
-          <S.Header>{dummyData[currentQuestion].category}</S.Header>
-          <S.Text dangerouslySetInnerHTML={{ __html: dummyData[currentQuestion].question }} />
+          <S.Header>{quizzQuestions[currentQuestion].category}</S.Header>
+          <S.Text dangerouslySetInnerHTML={{ __html: quizzQuestions[currentQuestion].question }} />
           <S.ButtonBox>
             <S.Button onClick={() => handleAnswerButton('True')}>True</S.Button>
             <S.Button onClick={() => handleAnswerButton('False')}>False</S.Button>
