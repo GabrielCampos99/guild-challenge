@@ -22,7 +22,7 @@ type TQuizzContent = {}
 
 const QuizzContent: React.FC<TQuizzContent> = () => {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0)
-  const [quizzAnswers, setQuizzAnswers] = useState<IQuizzWithAnswers[]>([])
+  const [quizzAnswers, setQuizzAnswers] = useState<IQuizzFinalized>({ answers: [], total: 0 })
 
   const dummyData = [
     {
@@ -46,20 +46,20 @@ const QuizzContent: React.FC<TQuizzContent> = () => {
       type: 'boolean',
       difficulty: 'hard',
       question: 'OUTRA COISA DA OUTRA COISA',
-      correct_answer: 'FALSE',
+      correct_answer: 'False',
       incorrect_answers: ['TRUE']
     }
   ]
 
   const handleAnswerButton = (answer: string) => {
     if (currentQuestion < dummyData.length) {
-      setQuizzAnswers((oldState: IQuizzWithAnswers[]) => {
+      setQuizzAnswers((oldState: IQuizzFinalized) => {
         if (answer === dummyData[currentQuestion].correct_answer) {
           const currentData: IQuizzWithAnswers = { ...dummyData[currentQuestion], isCorrect: true }
-          return [...oldState, currentData]
+          return { answers: [...oldState.answers, currentData], total: oldState.total + 1 }
         } else {
           const currentData: IQuizzWithAnswers = { ...dummyData[currentQuestion], isCorrect: false }
-          return [...oldState, currentData]
+          return { answers: [...oldState.answers, currentData], total: oldState.total }
         }
       })
       const nextQuestion: number = currentQuestion + 1
