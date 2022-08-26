@@ -81,9 +81,29 @@ const QuizzContent: React.FC<TQuizzContent> = () => {
 
   return (
     <S.Wrapper>
-      {currentQuestion === dummyData.length && (
+      {currentQuestion === dummyData.length && quizzAnswers && (
         <S.Content>
-          <S.Header>ACABOU</S.Header>
+          <S.Header>
+            You scored {quizzAnswers.total}/{dummyData.length}
+          </S.Header>
+
+          <S.ItemList>
+            <>
+              {quizzAnswers.answers.map((answer) => {
+                return (
+                  <div key={Math.random()} className={'final-statement'}>
+                    {answer.isCorrect ? '✅' : '❌'}{' '}
+                    <S.TextFinalized
+                      dangerouslySetInnerHTML={{ __html: answer.question }}
+                    />
+                  </div>
+                )
+              })}
+              <S.TextFinalized />
+            </>
+          </S.ItemList>
+
+          <S.Button onClick={() => handleAnswerButton('False')}>PLAY AGAIN?</S.Button>
         </S.Content>
       )}
       {currentQuestion < dummyData.length && (

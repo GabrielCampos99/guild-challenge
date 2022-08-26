@@ -7,7 +7,7 @@ export const Wrapper = styled.div`
     height: 100vh;
     display: flex;
     flex-direction: column;
-    text-align: center;
+    
     padding: 1.6rem;
   
 `
@@ -25,9 +25,16 @@ export const Content = styled.div`
 export const Header = styled.h1`
     margin-top: 1rem;
     font-size: 2.4rem;
+    text-align: center;
 `
 
 export const Text = styled.h2`
+    font-size: 1.6rem;
+    font-weight: 300;
+    text-align: center;
+`
+
+export const TextFinalized = styled.h2`
     font-size: 1.6rem;
     font-weight: 300;
 `
@@ -36,6 +43,18 @@ export const ButtonBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-around;
+    text-align: center;
+`
+
+export const ItemList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .final-statement {
+        display: flex;
+        gap: 10px;
+    }
 `
 
 export const Button = styled.button`
