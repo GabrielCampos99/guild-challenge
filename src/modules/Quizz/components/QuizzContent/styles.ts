@@ -32,6 +32,12 @@ export const Text = styled.h2`
     font-weight: 300;
 `
 
+export const ButtonBox = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+`
+
 export const Button = styled.button`
     font-size: 2.4rem;
     font-weight: 300;
