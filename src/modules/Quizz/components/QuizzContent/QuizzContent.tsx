@@ -1,24 +1,11 @@
-/* eslint-disable no-unused-vars */
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { IQuizzData } from '../../interfaces/IQuizzData'
+import { IQuizzFinalized } from '../../interfaces/IQuizzFinalized'
+import { IQuizzWithAnswers } from '../../interfaces/IQuizzWithAnswers'
 import { GetQuizzDataService } from '../../services/GetQuizzDataService'
 
 import * as S from './styles'
-
-interface IQuizzFinalized {
-  answers: IQuizzWithAnswers[]
-  total: number
-}
-interface IQuizzWithAnswers {
-  category: string
-  type: string
-  difficulty: string
-  question: string
-  correct_answer: string
-  incorrect_answers: string[]
-  isCorrect: boolean
-}
 
 type TQuizzContent = {}
 
